@@ -1,0 +1,30 @@
+# --------------------
+# Environment
+# --------------------
+# (You chose to commit .env, so DO NOT ignore it)
+
+# --------------------
+# Grafana runtime data
+# --------------------
+grafana-data/
+grafana.db
+
+# --------------------
+# Prometheus runtime data
+# --------------------
+prometheus-data/
+data/
+wal/
+
+# --------------------
+# Docker volumes accidentally created in repo
+# --------------------
+**/volumes/
+**/_data/
+
+# --------------------
+# OS / editor junk
+# --------------------
+.DS_Store
+*.swp
+*.log
