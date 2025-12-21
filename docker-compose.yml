@@ -43,6 +43,13 @@ services:
       - ./grafana/provisioning:/etc/grafana/provisioning
     restart: unless-stopped
 
+  show-host-ip:
+    image: alpine:latest
+    container_name: show-host-ip
+    network_mode: host
+    command: sh -c "apk add --no-cache iproute2 >/dev/null && echo 'Grafana available at:' && ip route get 1 | awk '{print \"http://\" $7 \":3000\"}'"
+    restart: "no"
+
 volumes:
   grafana-data:
   prometheus-data:
