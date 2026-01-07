@@ -2,9 +2,7 @@
 
 Fully Dockerized server monitoring stack + dashboard using **Prometheus + Grafana + Node Exporter** to monitor Linux host CPU/RAM/Disk/Network.
 
-- Easily deployable
-- Persists after reboot
-- Works on any modern Linux system
+The stack is easily deployable, works on any linux OS and persists after reboot.
 
 ## How it works?
 You (User) / Browser -> Grafana -> Prometheus -> Node Exporter -> Linux Host Metrics
