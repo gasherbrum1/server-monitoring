@@ -1,29 +1,26 @@
-# --------------------
-# Environment
-# --------------------
+# ---- Secrets / env files ----
+.env
+.env.*
+*.env
 
-# --------------------
-# Grafana runtime data
-# --------------------
-grafana-data/
-grafana.db
-
-# --------------------
-# Prometheus runtime data
-# --------------------
-prometheus-data/
+# ---- Grafana / Prometheus runtime data ----
+grafana_data/
+prometheus_data/
 data/
-wal/
+*.db
 
-# --------------------
-# Docker volumes accidentally created in repo
-# --------------------
-**/volumes/
-**/_data/
+# ---- Docker ----
+**/docker-compose.override.yml
 
-# --------------------
-# OS / editor junk
-# --------------------
-.DS_Store
-*.swp
+# ---- Logs ----
 *.log
+
+# ---- OS / editor junk ----
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# ---- Python / Node if added later ----
+__pycache__/
+node_modules/
