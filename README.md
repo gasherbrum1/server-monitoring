@@ -4,6 +4,7 @@ This setup runs node_exporter on a monitored host (e.g. EC2).
 
 ## Run
 
+git clone -b remote-server --single-branch https://github.com/gasherbrum1/server-monitoring.git
 docker compose up -d
 
 ## Network
