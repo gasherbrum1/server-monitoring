@@ -1,11 +1,12 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# This script is intended for Ubuntu EC2 (apt-based).
-# It installs Docker + docker compose plugin, enables Docker at boot,
-# and starts node-exporter using the docker-compose.yml in this folder.
+# Ubuntu EC2 installer for node_exporter (Dockerized).
+# Safe to run multiple times (idempotent).
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+COMPOSE_FILE="${SCRIPT_DIR}/docker-compose.yml"
+CONTAINER_NAME="node-exporter"
 
 if [[ $EUID -eq 0 ]]; then
   echo "Please run as a normal user with sudo (not as root)."
@@ -13,7 +14,7 @@ if [[ $EUID -eq 0 ]]; then
 fi
 
 if ! command -v apt-get >/dev/null 2>&1; then
-  echo "This installer currently supports Ubuntu/Debian (apt-get)."
+  echo "This installer supports Ubuntu/Debian (apt-get) only."
   exit 1
 fi
 
@@ -48,9 +49,18 @@ sudo systemctl start docker
 echo "==> Adding current user to docker group (for future logins)..."
 sudo usermod -aG docker "$USER" || true
 
-echo "==> Starting node-exporter (docker compose)..."
-sudo docker compose -f "${SCRIPT_DIR}/docker-compose.yml" up -d
+# --- Make script re-runnable: remove conflicting container if it exists ---
+echo "==> Ensuring no conflicting container name exists (${CONTAINER_NAME})..."
+if sudo docker ps -a --format '{{.Names}}' | grep -qx "${CONTAINER_NAME}"; then
+  echo "    Found existing ${CONTAINER_NAME} container. Removing it..."
+  sudo docker rm -f "${CONTAINER_NAME}" >/dev/null
+fi
+
+# Also clean up any prior compose deployment from this folder (safe: only affects this compose file)
+echo "==> (Re)deploying node-exporter with docker compose..."
+sudo docker compose -f "${COMPOSE_FILE}" up -d --remove-orphans
 
 echo ""
-echo "Done. node-exporter should be listening on port 9100."
-echo "If 'docker' without sudo fails later, log out and back in (group refresh)."
+echo "✅ Done. node-exporter should be listening on port 9100."
+echo "   Test locally:  curl http://localhost:9100/metrics"
+echo "ℹ If you want to run docker without sudo later, log out and back in."
