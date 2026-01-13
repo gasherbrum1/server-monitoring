@@ -1,6 +1,6 @@
 # Linux server live monitoring and dashboard stack (CPU, RAM, Disk usage + Uptime)
 
-This project is designed primarily around AWS EC2 instances within the AWS Free Tier which have dynamic IPs, however any Linux target can work.
+This project is designed primarily around monitoring AWS EC2 instances within the AWS Free Tier which have dynamic IPs, however any Linux target can work as an agent.
 
 **❗** 9100 TCP must be exposed towards the monitoring host public IP in order for metrics to be scraped.
 
@@ -85,7 +85,7 @@ Let's now connect the host to the remote agent. On the host, follow the commands
 ```bash
 1. docker compose run --rm monitorctl
 -> You will get prompted to input the Public IP of the remote server you installed the remote agent on.
--> Input the IP. It should now be added to Prometheus and pickec up by Grafana.
+-> Input the IP. It should now be added to Prometheus and picked up by Grafana.
 -> "http://XXXXXXXXXX:9090" to debug hosts connected to Prometheus.
 ```
 Voila! Your should now be able to remotely monitor multiple instances from your central monitor host. Whenever you want to add a new IP to monitor just run "docker compose run --rm monitorctl" again and follow the input.
