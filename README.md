@@ -1,16 +1,59 @@
-## Simple  live server monitoring dashboard stack.
+# Linux server live monitoring and dashboard stack 
 
-Fully Dockerized server monitoring stack + dashboard using **Prometheus + Grafana + Node Exporter** to monitor Linux host CPU/RAM/Disk/Network.
+This project is designed primarily around AWS EC2 instances within the AWS Free Tier which have dynamic IPs, however any Linux target can work.
 
-The stack is easily deployable, works on any linux OS and persists after reboot.
+**❗** 9100 TCP must be exposed towards the monitoring host public IP in order for metrics to be scraped.
 
-## How it works?
-You (User) / Browser -> Grafana -> Prometheus -> Node Exporter -> Linux Host Metrics
+**❗** The stack also supports local host metrics collection.
 
-## What do you need to replicate?
--> Linux, Git, Docker
+## Architecture
 
-## How to replicate & run?
+The project uses a central monitoring server and one or more remote target hosts.
+
+                   +-------------------------+
+                   |     Central  Host       |
+                   |      (main branch)      |
+                   |                         |
+                   |  +-------------------+  |
+                   |  |    Prometheus     |<--------------------+
+                   |  +-------------------+  |                    |
+                   |           |             |                    |
+                   |           v             |                    |
+                   |  +-------------------+  |                    |
+                   |  |     Grafana       |  |                    |
+                   |  +-------------------+  |                    |
+                   |                         |                    |
+                   |  +-------------------+  |                    |
+                   |  |  Node Exporter    |--+                    |
+                   |  |   (local) :9100   |                       |
+                   |  +-------------------+                       |
+                   +-------------------------+                    |
+                                                                  |
+              +-------------------------------------------+       |
+              |           Remote Target Host(s)           |       |
+              |         (remote-agent branch)             |       |
+              |                                           |       |
+              |     +-------------------------------+     |       |
+              |     |        Node Exporter :9100     |-----+-------+
+              |     +-------------------------------+     |
+              |                Linux Server                |
+              +-------------------------------------------+
+
+Data Flow:
+Node Exporter(s)  -->  Prometheus  -->  Grafana
+
+## Installation
+
+❗**Prerequisites** -> Linux, Git, Docker❗
+
+### Step 1: 
+Install the central monitor on your Linux host. You just need to follow the instructions on this README, on the **main** branch.
+
+### Central monitoring stack consists of: 
+- Prometheus
+- Grafana
+- Node Exporter (for local metrics)
+
 ```bash
 1. git clone https://github.com/gasherbrum1/server-monitoring.git
 2. cd server-monitoring
@@ -21,11 +64,8 @@ You (User) / Browser -> Grafana -> Prometheus -> Node Exporter -> Linux Host Met
 show-host-ip  | Grafana available at:
 show-host-ip  | http://Your server IP:3000
 show-host-ip  | http://:3000
-
 ```
-### On any device on the same LAN network as your Linux server, you can input " http:// Your server IP:3000 " to see Grafana:
--> Grafana will load -> Dashboards -> Node Exporter Full
 
-Congratulations! Your dashboard should now be ready to go and persist after restart
+### Step 2: 
+Install the remote agent. From this point you'll need to switch to the **remote agent** branch and follow the instructions over there.
 
-**NOTE** You can always edit the .env file located in the /server-monitoring dir with your own variables. The one pushed on this repo is purely for example and replicability.
