@@ -3,7 +3,15 @@ global:
   evaluation_interval: 5s
 
 scrape_configs:
+
+  # Local node exporter running in Docker
   - job_name: "node-exporter"
     static_configs:
       - targets:
           - "node-exporter:9100"
+
+  # Manually added remote targets (via monitorctl)
+  - job_name: "manual-targets"
+    file_sd_configs:
+      - files:
+          - /etc/prometheus/targets/manual_targets.json
